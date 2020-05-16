@@ -1,16 +1,11 @@
 package top.huic.flutter_qiniucloud_live_plugin.view;
 
-
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 
-import com.pili.pldroid.player.widget.PLVideoTextureView;
 import com.pili.pldroid.player.widget.PLVideoView;
 
 import java.util.Map;
-import java.util.Objects;
 
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;

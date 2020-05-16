@@ -45,7 +45,7 @@ public class MediaController extends FrameLayout implements IMediaController {
     private boolean mShowing;
     private boolean mDragging;
     private boolean mInstantSeeking = true;
-    private long mSeekPosition = 0l;
+    private long mSeekPosition = 0L;
     private static int sDefaultTimeout = 3000;
     private static final int SEEK_TO_POST_DELAY_MILLIS = 200;
 
@@ -79,7 +79,9 @@ public class MediaController extends FrameLayout implements IMediaController {
 
     public interface OnClickSpeedAdjustListener {
         void onClickNormal();
+
         void onClickFaster();
+
         void onClickSlower();
     }
 
@@ -92,8 +94,9 @@ public class MediaController extends FrameLayout implements IMediaController {
 
     public MediaController(Context context) {
         super(context);
-        if (!mFromXml && initController(context))
+        if (!mFromXml && initController(context)) {
             initFloatingWindow();
+        }
     }
 
     public MediaController(Context context, boolean useFastForward, boolean disableProgressBar) {
@@ -125,8 +128,9 @@ public class MediaController extends FrameLayout implements IMediaController {
 
     @Override
     public void onFinishInflate() {
-        if (mRoot != null)
+        if (mRoot != null) {
             initControllerView(mRoot);
+        }
         super.onFinishInflate();
     }
 
@@ -199,8 +203,7 @@ public class MediaController extends FrameLayout implements IMediaController {
     /**
      * Control the action when the seekbar dragged by user
      *
-     * @param seekWhenDragging
-     * True the media will seek periodically
+     * @param seekWhenDragging True the media will seek periodically
      */
     public void setInstantSeeking(boolean seekWhenDragging) {
         mInstantSeeking = seekWhenDragging;
@@ -208,8 +211,9 @@ public class MediaController extends FrameLayout implements IMediaController {
 
     private void disableUnsupportedButtons() {
         try {
-            if (mPauseButton != null && !mPlayer.canPause())
+            if (mPauseButton != null && !mPlayer.canPause()) {
                 mPauseButton.setEnabled(false);
+            }
         } catch (IncompatibleClassChangeError ex) {
         }
     }
@@ -224,11 +228,9 @@ public class MediaController extends FrameLayout implements IMediaController {
      * the next time the controller is shown.
      * </p>
      *
-     * @param animationStyle
-     * animation style to use when the controller appears and disappears.
-     * Set to -1 for the default animation, 0 for no animation,
-     * or a resource identifier for an explicit animation.
-     *
+     * @param animationStyle animation style to use when the controller appears and disappears.
+     *                       Set to -1 for the default animation, 0 for no animation,
+     *                       or a resource identifier for an explicit animation.
      */
     public void setAnimationStyle(int animationStyle) {
         mAnimStyle = animationStyle;
@@ -300,10 +302,12 @@ public class MediaController extends FrameLayout implements IMediaController {
 
         mDuration = duration;
 
-        if (mEndTime != null)
+        if (mEndTime != null) {
             mEndTime.setText(generateTime(mDuration));
-        if (mCurrentTime != null)
+        }
+        if (mCurrentTime != null) {
             mCurrentTime.setText(generateTime(position));
+        }
 
         return position;
     }
@@ -344,8 +348,9 @@ public class MediaController extends FrameLayout implements IMediaController {
                 || keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE || keyCode == KeyEvent.KEYCODE_SPACE)) {
             doPauseResume();
             show(sDefaultTimeout);
-            if (mPauseButton != null)
+            if (mPauseButton != null) {
                 mPauseButton.requestFocus();
+            }
             return true;
         } else if (keyCode == KeyEvent.KEYCODE_MEDIA_STOP) {
             if (mPlayer.isPlaying()) {
@@ -364,6 +369,7 @@ public class MediaController extends FrameLayout implements IMediaController {
     }
 
     private OnClickListener mPauseListener = new OnClickListener() {
+        @Override
         public void onClick(View v) {
             if (mOnClickSpeedAdjustListener != null) {
                 mOnClickSpeedAdjustListener.onClickNormal();
@@ -374,33 +380,39 @@ public class MediaController extends FrameLayout implements IMediaController {
     };
 
     private void updatePausePlay() {
-        if (mRoot == null || mPauseButton == null)
+        if (mRoot == null || mPauseButton == null) {
             return;
+        }
 
-        if (mPlayer.isPlaying())
+        if (mPlayer.isPlaying()) {
             mPauseButton.setImageResource(IC_MEDIA_PAUSE_ID);
-        else
+        } else {
             mPauseButton.setImageResource(IC_MEDIA_PLAY_ID);
+        }
     }
 
     private void doPauseResume() {
-        if (mPlayer.isPlaying())
+        if (mPlayer.isPlaying()) {
             mPlayer.pause();
-        else
+        } else {
             mPlayer.start();
+        }
         updatePausePlay();
     }
 
     private SeekBar.OnSeekBarChangeListener mSeekListener = new SeekBar.OnSeekBarChangeListener() {
 
+        @Override
         public void onStartTrackingTouch(SeekBar bar) {
             mDragging = true;
             show(3600000);
             mHandler.removeMessages(SHOW_PROGRESS);
-            if (mInstantSeeking)
+            if (mInstantSeeking) {
                 mAM.setStreamMute(AudioManager.STREAM_MUSIC, true);
+            }
         }
 
+        @Override
         public void onProgressChanged(SeekBar bar, int progress, boolean fromuser) {
             if (!fromuser) {
                 return;
@@ -419,13 +431,16 @@ public class MediaController extends FrameLayout implements IMediaController {
                 };
                 mHandler.postDelayed(mLastSeekBarRunnable, SEEK_TO_POST_DELAY_MILLIS);
             }
-            if (mCurrentTime != null)
+            if (mCurrentTime != null) {
                 mCurrentTime.setText(time);
+            }
         }
 
+        @Override
         public void onStopTrackingTouch(SeekBar bar) {
-            if (!mInstantSeeking)
+            if (!mInstantSeeking) {
                 mPlayer.seekTo(mDuration * bar.getProgress() / 1000);
+            }
 
             show(sDefaultTimeout);
             mHandler.removeMessages(SHOW_PROGRESS);
@@ -436,6 +451,7 @@ public class MediaController extends FrameLayout implements IMediaController {
     };
 
     private OnClickListener mRewListener = new OnClickListener() {
+        @Override
         public void onClick(View v) {
             if (mOnClickSpeedAdjustListener != null) {
                 mOnClickSpeedAdjustListener.onClickSlower();
@@ -445,6 +461,7 @@ public class MediaController extends FrameLayout implements IMediaController {
     };
 
     private OnClickListener mFfwdListener = new OnClickListener() {
+        @Override
         public void onClick(View v) {
             if (mOnClickSpeedAdjustListener != null) {
                 mOnClickSpeedAdjustListener.onClickFaster();
@@ -455,12 +472,11 @@ public class MediaController extends FrameLayout implements IMediaController {
 
     /**
      * Set the view that acts as the anchor for the control view.
-     *
+     * <p>
      * - This can for example be a VideoView, or your Activity's main view.
      * - AudioPlayer has no anchor view, so the view parameter will be null.
      *
-     * @param view
-     * The view to which to anchor the controller when it is visible.
+     * @param view The view to which to anchor the controller when it is visible.
      */
     @Override
     public void setAnchorView(View view) {
@@ -493,8 +509,7 @@ public class MediaController extends FrameLayout implements IMediaController {
      * Show the controller on screen. It will go away automatically after
      * 'timeout' milliseconds of inactivity.
      *
-     * @param timeout
-     * The timeout in milliseconds. Use 0 to show the controller until hide() is called.
+     * @param timeout The timeout in milliseconds. Use 0 to show the controller until hide() is called.
      */
     @Override
     public void show(int timeout) {
@@ -504,8 +519,9 @@ public class MediaController extends FrameLayout implements IMediaController {
                     mAnchor.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
                 }
             }
-            if (mPauseButton != null)
+            if (mPauseButton != null) {
                 mPauseButton.requestFocus();
+            }
             disableUnsupportedButtons();
 
             if (mFromXml) {
@@ -533,8 +549,9 @@ public class MediaController extends FrameLayout implements IMediaController {
                 }
             }
             mShowing = true;
-            if (mShownListener != null)
+            if (mShownListener != null) {
                 mShownListener.onShown();
+            }
         }
         updatePausePlay();
         mHandler.sendEmptyMessage(SHOW_PROGRESS);
@@ -561,16 +578,18 @@ public class MediaController extends FrameLayout implements IMediaController {
             }
             try {
                 mHandler.removeMessages(SHOW_PROGRESS);
-                if (mFromXml)
+                if (mFromXml) {
                     setVisibility(View.GONE);
-                else
+                } else {
                     mWindow.dismiss();
+                }
             } catch (IllegalArgumentException ex) {
                 Log.e(TAG, "MediaController already removed");
             }
             mShowing = false;
-            if (mHiddenListener != null)
+            if (mHiddenListener != null) {
                 mHiddenListener.onHidden();
+            }
         }
     }
 
@@ -585,8 +604,9 @@ public class MediaController extends FrameLayout implements IMediaController {
         if (mRewButton != null) {
             mRewButton.setEnabled(enabled);
         }
-        if (mProgress != null && !mDisableProgress)
+        if (mProgress != null && !mDisableProgress) {
             mProgress.setEnabled(enabled);
+        }
         disableUnsupportedButtons();
         super.setEnabled(enabled);
     }

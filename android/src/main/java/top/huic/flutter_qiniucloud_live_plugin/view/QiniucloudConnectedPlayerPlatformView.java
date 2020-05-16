@@ -1,19 +1,10 @@
 package top.huic.flutter_qiniucloud_live_plugin.view;
 
-
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
-import com.qiniu.pili.droid.rtcstreaming.RTCConferenceOptions;
-import com.qiniu.pili.droid.rtcstreaming.RTCMediaStreamingManager;
 import com.qiniu.pili.droid.rtcstreaming.RTCSurfaceView;
 import com.qiniu.pili.droid.rtcstreaming.RTCVideoWindow;
-import com.qiniu.pili.droid.streaming.AVCodecType;
-import com.qiniu.pili.droid.streaming.CameraStreamingSetting;
 
 import java.util.Map;
 
@@ -25,7 +16,6 @@ import io.flutter.plugin.platform.PlatformView;
 import io.flutter.plugin.platform.PlatformViewFactory;
 import top.huic.flutter_qiniucloud_live_plugin.util.CommonUtil;
 import top.huic.flutter_qiniucloud_live_plugin.util.ConnectedUtil;
-import top.huic.flutter_qiniucloud_live_plugin.widget.CameraPreviewFrameView;
 
 /**
  * 七牛云连麦播放视图
@@ -102,7 +92,7 @@ public class QiniucloudConnectedPlayerPlatformView extends PlatformViewFactory i
     @Override
     public PlatformView create(Context context, int viewId, Object args) {
         this.viewId = viewId;
-        Map<String, Object> params = (Map<String, Object>) args;
+        Map<String, Object> params = cast(args);
         QiniucloudConnectedPlayerPlatformView view = new QiniucloudConnectedPlayerPlatformView(context);
         // 绑定方法监听器
         MethodChannel methodChannel = new MethodChannel(messenger, SIGN + "_" + viewId);
@@ -112,6 +102,11 @@ public class QiniucloudConnectedPlayerPlatformView extends PlatformViewFactory i
         // 添加到视图队列
         ConnectedUtil.add(this.viewId, view);
         return view;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> T cast(Object obj) {
+        return (T) obj;
     }
 
     @Override

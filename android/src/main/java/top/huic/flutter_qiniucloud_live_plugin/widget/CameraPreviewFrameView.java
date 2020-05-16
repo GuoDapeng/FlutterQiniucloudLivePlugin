@@ -3,7 +3,6 @@ package top.huic.flutter_qiniucloud_live_plugin.widget;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -13,6 +12,7 @@ public class CameraPreviewFrameView extends GLSurfaceView {
 
     public interface Listener {
         boolean onSingleTapUp(MotionEvent e);
+
         boolean onZoomValueChanged(float factor);
     }
 

@@ -7,6 +7,7 @@ import com.qiniu.pili.droid.rtcstreaming.RTCServerRegion;
 import com.qiniu.pili.droid.streaming.StreamingEnv;
 
 import androidx.annotation.NonNull;
+
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
@@ -26,17 +27,7 @@ public class FlutterQiniucloudLivePlugin implements FlutterPlugin, MethodCallHan
 
     private final static String TAG = FlutterQiniucloudLivePlugin.class.getName();
 
-    /**
-     * 全局上下文
-     */
-    private Context context;
-
-    public FlutterQiniucloudLivePlugin() {
-    }
-
     private FlutterQiniucloudLivePlugin(BinaryMessenger messenger, Context context, MethodChannel channel, PlatformViewRegistry registry) {
-        this.context = context;
-
         // 初始化七牛云
         StreamingEnv.init(context);
 
@@ -51,8 +42,13 @@ public class FlutterQiniucloudLivePlugin implements FlutterPlugin, MethodCallHan
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
-        final MethodChannel channel = new MethodChannel(flutterPluginBinding.getFlutterEngine().getDartExecutor(), "flutter_qiniucloud_live_plugin");
-        channel.setMethodCallHandler(new FlutterQiniucloudLivePlugin(flutterPluginBinding.getBinaryMessenger(), flutterPluginBinding.getApplicationContext(), channel, flutterPluginBinding.getPlatformViewRegistry()));
+        final MethodChannel channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "flutter_qiniucloud_live_plugin");
+        channel.setMethodCallHandler(new FlutterQiniucloudLivePlugin(
+                flutterPluginBinding.getBinaryMessenger(),
+                flutterPluginBinding.getApplicationContext(),
+                channel,
+                flutterPluginBinding.getPlatformViewRegistry()
+        ));
     }
 
     // This static function is optional and equivalent to onAttachedToEngine. It supports the old
@@ -64,6 +60,7 @@ public class FlutterQiniucloudLivePlugin implements FlutterPlugin, MethodCallHan
     // them functionally equivalent. Only one of onAttachedToEngine or registerWith will be called
     // depending on the user's project. onAttachedToEngine or registerWith must both be defined
     // in the same class.
+
     public static void registerWith(Registrar registrar) {
         final MethodChannel channel = new MethodChannel(registrar.messenger(), "flutter_qiniucloud_live_plugin");
         channel.setMethodCallHandler(new FlutterQiniucloudLivePlugin(registrar.messenger(), registrar.context(), channel, registrar.platformViewRegistry()));

@@ -5,7 +5,10 @@ import android.content.Context;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.qiniu.pili.droid.rtcstreaming.RTCAudioSource;
 import com.qiniu.pili.droid.rtcstreaming.RTCConferenceOptions;
 import com.qiniu.pili.droid.rtcstreaming.RTCMediaStreamingManager;
@@ -110,7 +113,7 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
     }
 
     @Override
-    public void onMethodCall(MethodCall call, MethodChannel.Result result) {
+    public void onMethodCall(MethodCall call, @NonNull MethodChannel.Result result) {
         switch (call.method) {
             case "resume":
                 this.resume(call, result);
@@ -206,7 +209,7 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
 
     @Override
     public PlatformView create(Context context, int viewId, Object args) {
-        Map<String, Object> params = (Map<String, Object>) args;
+        Map<String, Object> params = cast(args);
         QiniucloudPushPlatformView view = new QiniucloudPushPlatformView(context);
         // 绑定方法监听器
         MethodChannel methodChannel = new MethodChannel(messenger, SIGN + "_" + viewId);
@@ -214,6 +217,11 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
         // 初始化
         view.init(params, methodChannel);
         return view;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> T cast(Object obj) {
+        return (T) obj;
     }
 
     @Override
@@ -256,17 +264,22 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
 
         // 预览设置
         cameraStreamingSetting = JSON.parseObject(cameraSettingStr, CameraStreamingSetting.class);
-        cameraStreamingSetting.setCameraPrvSizeRatio(CameraStreamingSetting.PREVIEW_SIZE_RATIO.RATIO_16_9);
         if (cameraStreamingSetting == null) {
             Log.e(TAG, "init: 相机信息初始化失败!");
         } else {
+            cameraStreamingSetting.setCameraPrvSizeRatio(CameraStreamingSetting.PREVIEW_SIZE_RATIO.RATIO_16_9);
+
             // 美颜过滤(设置美颜后，启用美颜过滤，没设置美颜，则自动过滤空)
             cameraStreamingSetting.setVideoFilter(CameraStreamingSetting.VIDEO_FILTER_TYPE.VIDEO_FILTER_BEAUTY);
 
             // 美颜设置
-            Map faceBeauty = (Map) cameraSettingMap.get("faceBeauty");
+            JSONObject faceBeauty = (JSONObject) cameraSettingMap.get("faceBeauty");
             if (faceBeauty != null) {
-                cameraStreamingSetting.setFaceBeautySetting(new CameraStreamingSetting.FaceBeautySetting(Float.valueOf(faceBeauty.get("beautyLevel").toString()), Float.valueOf(faceBeauty.get("whiten").toString()), Float.valueOf(faceBeauty.get("redden").toString())));
+                cameraStreamingSetting.setFaceBeautySetting(new CameraStreamingSetting.FaceBeautySetting(
+                        Float.parseFloat(faceBeauty.getString("beautyLevel")),
+                        Float.parseFloat(faceBeauty.getString("whiten")),
+                        Float.parseFloat(faceBeauty.getString("redden"))
+                ));
             }
         }
 
@@ -426,9 +439,9 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
      */
     private void switchCamera(MethodCall call, final MethodChannel.Result result) {
         CameraStreamingSetting.CAMERA_FACING_ID id;
-        if(cameraStreamingSetting.getCameraFacingId() == CameraStreamingSetting.CAMERA_FACING_ID.CAMERA_FACING_FRONT){
+        if (cameraStreamingSetting.getCameraFacingId() == CameraStreamingSetting.CAMERA_FACING_ID.CAMERA_FACING_FRONT) {
             id = CameraStreamingSetting.CAMERA_FACING_ID.CAMERA_FACING_BACK;
-        }else{
+        } else {
             id = CameraStreamingSetting.CAMERA_FACING_ID.CAMERA_FACING_FRONT;
         }
         cameraStreamingSetting.setCameraFacingId(id);
@@ -531,7 +544,7 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
         watermarkSetting.setResourcePath(CommonUtil.getParam(call, result, "resourcePath").toString());
         watermarkSetting.setSize(WatermarkSetting.WATERMARK_SIZE.valueOf(CommonUtil.getParam(call, result, "size").toString()));
         watermarkSetting.setLocation(WatermarkSetting.WATERMARK_LOCATION.valueOf(CommonUtil.getParam(call, result, "location").toString()));
-        watermarkSetting.setAlpha(Integer.valueOf(CommonUtil.getParam(call, result, "alpha").toString()));
+        watermarkSetting.setAlpha(Integer.parseInt(CommonUtil.getParam(call, result, "alpha").toString()));
         manager.updateWatermarkSetting(watermarkSetting);
         result.success(null);
     }
