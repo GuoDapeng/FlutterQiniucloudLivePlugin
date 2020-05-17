@@ -27,6 +27,9 @@ public class FlutterQiniucloudLivePlugin implements FlutterPlugin, MethodCallHan
 
     private final static String TAG = FlutterQiniucloudLivePlugin.class.getName();
 
+    public FlutterQiniucloudLivePlugin() {
+    }
+
     private FlutterQiniucloudLivePlugin(BinaryMessenger messenger, Context context, MethodChannel channel, PlatformViewRegistry registry) {
         // 初始化七牛云
         StreamingEnv.init(context);

@@ -49,12 +49,9 @@ class CameraStreamingSettingEntity {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['builtInFaceBeautyEnabled'] = this.builtInFaceBeautyEnabled;
-    data['cameraFacingId'] = this.cameraFacingId != null
-        ? this
-            .cameraFacingId
-            .toString()
-            .replaceAll("QiniucloudCameraTypeEnum.", "")
-        : null;
+    data['cameraFacingId'] = this.cameraFacingId == null
+        ? null
+        : QiniucloudCameraTypeEnumTool.getString(this.cameraFacingId);
     data['frontCameraPreviewMirror'] = this.frontCameraPreviewMirror;
     data['faceBeauty'] =
         this.faceBeauty != null ? this.faceBeauty.toJson() : null;
@@ -62,9 +59,9 @@ class CameraStreamingSettingEntity {
     data['continuousFocusModeEnabled'] = this.continuousFocusModeEnabled;
     data['cameraPrvSizeLevel'] = this.cameraPrvSizeLevel != null
         ? this
-        .cameraPrvSizeLevel
-        .toString()
-        .replaceAll("QiniucloudPushPreviewSizeLevelEnum.", "")
+            .cameraPrvSizeLevel
+            .toString()
+            .replaceAll("QiniucloudPushPreviewSizeLevelEnum.", "")
         : null;
     return data;
   }

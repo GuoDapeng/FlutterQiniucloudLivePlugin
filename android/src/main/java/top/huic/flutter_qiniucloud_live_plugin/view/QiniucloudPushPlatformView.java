@@ -2,6 +2,7 @@ package top.huic.flutter_qiniucloud_live_plugin.view;
 
 
 import android.content.Context;
+import android.hardware.Camera;
 import android.util.Log;
 import android.view.View;
 
@@ -268,6 +269,15 @@ public class QiniucloudPushPlatformView extends PlatformViewFactory implements P
             Log.e(TAG, "init: 相机信息初始化失败!");
         } else {
             cameraStreamingSetting.setCameraPrvSizeRatio(CameraStreamingSetting.PREVIEW_SIZE_RATIO.RATIO_16_9);
+            String cameraFacingId = (String) cameraSettingMap.get("cameraFacingId");
+            if (cameraFacingId != null) {
+                if ("CAMERA_FACING_BACK".equals(cameraFacingId)) {
+                    cameraStreamingSetting.setCameraId(Camera.CameraInfo.CAMERA_FACING_BACK);
+                }
+                if ("CAMERA_FACING_FRONT".equals(cameraFacingId)) {
+                    cameraStreamingSetting.setCameraId(Camera.CameraInfo.CAMERA_FACING_FRONT);
+                }
+            }
 
             // 美颜过滤(设置美颜后，启用美颜过滤，没设置美颜，则自动过滤空)
             cameraStreamingSetting.setVideoFilter(CameraStreamingSetting.VIDEO_FILTER_TYPE.VIDEO_FILTER_BEAUTY);

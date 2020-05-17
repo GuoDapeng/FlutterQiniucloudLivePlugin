@@ -214,14 +214,20 @@ public class QiniucloudPushPlatformView : NSObject,FlutterPlatformView,PLMediaSt
         self.audioCaptureConfig = PLAudioCaptureConfiguration.default();
         self.audioStreamingConfig = PLAudioStreamingConfiguration.default();
         
-        // 初始化会话对象
-        self.session = PLMediaStreamingSession(videoCaptureConfiguration: videoCaptureConfig, audioCaptureConfiguration:audioCaptureConfig, videoStreamingConfiguration:videoStreamingConfig, audioStreamingConfiguration: audioStreamingConfig, stream: nil);
-        
         // 加载配置
         let dict = args as! Dictionary<String, Any>;
         self.loadVideoCaptureConfig(dict["cameraStreamingSetting"]);
         self.loadStreamingProfile(dict["streamingProfile"]);
         self.loadConnectOptions(dict["connectOptions"]);
+        
+        // 初始化会话对象
+        self.session = PLMediaStreamingSession(
+            videoCaptureConfiguration: videoCaptureConfig,
+            audioCaptureConfiguration:audioCaptureConfig,
+            videoStreamingConfiguration:videoStreamingConfig,
+            audioStreamingConfiguration: audioStreamingConfig,
+            stream: nil
+        );
         
         // 绑定监听器
         self.session?.delegate = self;
@@ -237,25 +243,25 @@ public class QiniucloudPushPlatformView : NSObject,FlutterPlatformView,PLMediaSt
         let cameraSetting = JsonUtil.getDictionaryFromJSONString(jsonString: cameraSettingStr  as! String);
         
         //  # 摄像头
-        if let cameraFacingId = cameraSetting["CAMERA_FACING_BACK"]{
+        if let cameraFacingId = cameraSetting["cameraFacingId"]{
             if cameraFacingId as! String == "CAMERA_FACING_BACK"{
-                videoCaptureConfig?.position = AVCaptureDevice.Position.back;
+                self.videoCaptureConfig?.position = AVCaptureDevice.Position.back;
             }
             if cameraFacingId as! String == "CAMERA_FACING_FRONT"{
-                videoCaptureConfig?.position = AVCaptureDevice.Position.front;
+                self.videoCaptureConfig?.position = AVCaptureDevice.Position.front;
             }
         }
         
         //  # 镜像翻转(预览端)
         if let frontCameraPreviewMirror = cameraSetting["frontCameraPreviewMirror"]{
-            videoCaptureConfig?.previewMirrorRearFacing = frontCameraPreviewMirror as! Bool;
-            videoCaptureConfig?.previewMirrorFrontFacing = frontCameraPreviewMirror as! Bool;
+            self.videoCaptureConfig?.previewMirrorRearFacing = frontCameraPreviewMirror as! Bool;
+            self.videoCaptureConfig?.previewMirrorFrontFacing = frontCameraPreviewMirror as! Bool;
         }
         
         //  # 镜像翻转(播放端)
         if let frontCameraMirror = cameraSetting["frontCameraMirror"]{
-            videoCaptureConfig?.streamMirrorRearFacing = frontCameraMirror as! Bool;
-            videoCaptureConfig?.streamMirrorFrontFacing = frontCameraMirror as! Bool;
+            self.videoCaptureConfig?.streamMirrorRearFacing = frontCameraMirror as! Bool;
+            self.videoCaptureConfig?.streamMirrorFrontFacing = frontCameraMirror as! Bool;
         }
         
         // 美颜设置

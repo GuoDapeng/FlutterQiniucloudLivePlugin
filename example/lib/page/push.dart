@@ -303,7 +303,10 @@ class PushPageState extends State<PushPage> {
               children: <Widget>[
                 QiniucloudPushView(
                   cameraStreamingSetting: CameraStreamingSettingEntity(
-                      faceBeauty: faceBeautySettingEntity),
+                    faceBeauty: faceBeautySettingEntity,
+                    cameraFacingId:
+                        QiniucloudCameraTypeEnum.CAMERA_FACING_FRONT,
+                  ),
                   streamingProfile: StreamingProfileEntity(
                     publishUrl:
                         "rtmp://pili-publish.tianshitaiyuan.com/zuqulive/test?e=1583495173&token=v740N_w0pHblR7KZMSPHhfdqjxrHEv5e_yBaiq0e:B0gtMgQHqUABNL_jiqa5SmSX-Dg=1",
