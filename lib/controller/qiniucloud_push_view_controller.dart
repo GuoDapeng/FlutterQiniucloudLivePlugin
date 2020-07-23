@@ -7,7 +7,6 @@ import 'package:flutter_qiniucloud_live_plugin/entity/face_beauty_setting_entity
 import 'package:flutter_qiniucloud_live_plugin/entity/streaming_profile_entity.dart';
 import 'package:flutter_qiniucloud_live_plugin/entity/watermark_setting_entity.dart';
 import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_audio_source_type_enum.dart';
-import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_camera_type_enum.dart';
 import 'package:flutter_qiniucloud_live_plugin/enums/qiniucloud_push_listener_type_enum.dart';
 import 'package:flutter_qiniucloud_live_plugin/view/qiniucloud_push_view.dart';
 
